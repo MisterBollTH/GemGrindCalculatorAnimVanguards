@@ -45,8 +45,12 @@
             color: #ffffff;
             font-size: 16px;
         }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
         button {
-            width: 100%;
+            flex: 1;
             padding: 12px;
             background-color: #00ff99;
             border: none;
@@ -59,6 +63,13 @@
         }
         button:hover {
             background-color: #00e68a;
+        }
+        .reset-button {
+            background-color: #ff4d4d;
+            color: #fff;
+        }
+        .reset-button:hover {
+            background-color: #e60000;
         }
         .result {
             margin-top: 20px;
@@ -76,19 +87,22 @@
     <div class="container">
         <h1>คำนวณเพชรและเวลา</h1>
 
-        <label for="stages">จำนวนด่านทั้งหมด:</label>
-        <input type="number" id="stages" value="0">
+        <label for="stages">จำนวนรอบทั้งหมด:</label>
+        <input type="number" id="stages" value="0" min="0">
 
         <label for="diamonds">จำนวนเพชรต่อรอบ:</label>
-        <input type="number" id="diamonds" value="0">
+        <input type="number" id="diamonds" value="0" min="0">
 
         <label for="minutes">เวลาต่อด่าน (นาที):</label>
-        <input type="number" id="minutes" value="0">
+        <input type="number" id="minutes" value="0" min="0">
 
         <label for="farmHours">จำนวนชั่วโมงที่ต้องการฟาร์ม:</label>
-        <input type="number" id="farmHours" value="0">
+        <input type="number" id="farmHours" value="0" min="0">
 
-        <button onclick="calculate()">คำนวณ</button>
+        <div class="button-group">
+            <button onclick="calculate()">คำนวณ</button>
+            <button class="reset-button" onclick="resetForm()">รีเซ็ต</button>
+        </div>
 
         <div class="result" id="result"></div>
     </div>
@@ -100,6 +114,24 @@
             let diamondsPerRound = parseInt(document.getElementById("diamonds").value);
             let minutesPerStage = parseInt(document.getElementById("minutes").value);
             let farmHours = parseInt(document.getElementById("farmHours").value);
+
+            // ตรวจสอบอินพุต
+            if (isNaN(totalStages) || totalStages < 0) {
+                alert("กรุณาใส่จำนวนรอบทั้งหมดที่ถูกต้อง");
+                return;
+            }
+            if (isNaN(diamondsPerRound) || diamondsPerRound < 0) {
+                alert("กรุณาใส่จำนวนเพชรต่อรอบที่ถูกต้อง");
+                return;
+            }
+            if (isNaN(minutesPerStage) || minutesPerStage < 0) {
+                alert("กรุณาใส่เวลาแต่ละด่านที่ถูกต้อง");
+                return;
+            }
+            if (isNaN(farmHours) || farmHours < 0) {
+                alert("กรุณาใส่จำนวนชั่วโมงที่ต้องการฟาร์มที่ถูกต้อง");
+                return;
+            }
 
             let totalDiamonds = 0;
             let totalMinutes = 0;
@@ -125,6 +157,17 @@
             resultDiv.innerHTML = `<h3>ฟาร์มเสร็จใน ${farmHours} ชั่วโมง</h3>`;
             resultDiv.innerHTML += `<p>เพชรรวมที่ได้รับ: ${totalDiamonds}</p>`;
             resultDiv.innerHTML += `<p>เวลาที่ใช้: ${totalHoursUsed} ชั่วโมง ${remainingMinutesUsed} นาที</p>`;
+        }
+
+        function resetForm() {
+            // รีเซ็ตค่าอินพุตทั้งหมด
+            document.getElementById("stages").value = 0;
+            document.getElementById("diamonds").value = 0;
+            document.getElementById("minutes").value = 0;
+            document.getElementById("farmHours").value = 0;
+
+            // ล้างผลลัพธ์
+            document.getElementById("result").innerHTML = "";
         }
     </script>
 
