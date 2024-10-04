@@ -87,9 +87,6 @@
     <div class="container">
         <h1>คำนวณเพชรและเวลา</h1>
 
-        <label for="stages">จำนวนรอบทั้งหมด:</label>
-        <input type="number" id="stages" value="0" min="0">
-
         <label for="diamonds">จำนวนเพชรต่อรอบ:</label>
         <input type="number" id="diamonds" value="0" min="0">
 
@@ -110,16 +107,11 @@
     <script>
         function calculate() {
             // รับค่าจาก input
-            let totalStages = parseInt(document.getElementById("stages").value);
             let diamondsPerRound = parseInt(document.getElementById("diamonds").value);
             let minutesPerStage = parseInt(document.getElementById("minutes").value);
             let farmHours = parseInt(document.getElementById("farmHours").value);
 
             // ตรวจสอบอินพุต
-            if (isNaN(totalStages) || totalStages < 0) {
-                alert("กรุณาใส่จำนวนรอบทั้งหมดที่ถูกต้อง");
-                return;
-            }
             if (isNaN(diamondsPerRound) || diamondsPerRound < 0) {
                 alert("กรุณาใส่จำนวนเพชรต่อรอบที่ถูกต้อง");
                 return;
@@ -136,17 +128,11 @@
             let totalDiamonds = 0;
             let totalMinutes = 0;
             let totalFarmMinutes = farmHours * 60;  // แปลงชั่วโมงเป็นนาที
+            let totalStages = Math.floor(totalFarmMinutes / minutesPerStage); // คำนวณจำนวนรอบทั้งหมด
 
             // คำนวณเพชรรวมและเวลารวม
-            for (let stage = 1; stage <= totalStages; stage++) {
-                totalMinutes += minutesPerStage;
-
-                if (totalMinutes > totalFarmMinutes) {
-                    break;
-                }
-
-                totalDiamonds += diamondsPerRound;
-            }
+            totalDiamonds = totalStages * diamondsPerRound;
+            totalMinutes = totalStages * minutesPerStage;
 
             // คำนวณเวลาใช้งานจริง
             let totalHoursUsed = Math.floor(totalMinutes / 60);
@@ -155,13 +141,13 @@
             // แสดงผลรวม
             let resultDiv = document.getElementById("result");
             resultDiv.innerHTML = `<h3>ฟาร์มเสร็จใน ${farmHours} ชั่วโมง</h3>`;
+            resultDiv.innerHTML += `<p>จำนวนรอบทั้งหมด: ${totalStages}</p>`;
             resultDiv.innerHTML += `<p>เพชรรวมที่ได้รับ: ${totalDiamonds}</p>`;
             resultDiv.innerHTML += `<p>เวลาที่ใช้: ${totalHoursUsed} ชั่วโมง ${remainingMinutesUsed} นาที</p>`;
         }
 
         function resetForm() {
             // รีเซ็ตค่าอินพุตทั้งหมด
-            document.getElementById("stages").value = 0;
             document.getElementById("diamonds").value = 0;
             document.getElementById("minutes").value = 0;
             document.getElementById("farmHours").value = 0;
